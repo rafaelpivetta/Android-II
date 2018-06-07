@@ -49,7 +49,11 @@ class PerfilUsuarioActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_perfilusuario)
 
+        mAuth = FirebaseAuth.getInstance()
+
         val uid = mAuth!!.currentUser!!.uid
+
+
         val dbFire = FirebaseDatabase.getInstance()
 
         val userRef = dbFire.getReference("/user/$uid")

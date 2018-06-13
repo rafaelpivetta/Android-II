@@ -54,50 +54,57 @@ class NovoUsuarioActivity : AppCompatActivity(){
             u.email = edtEmail.text.toString()
             u.senha = edtSenha.text.toString()
 
-            /*var db = Room.databaseBuilder(applicationContext,
-                    AppDatabase::class.java, "exerciciofinal").allowMainThreadQueries().build()
-
-            var temCadastrado = false
-            val lista:List<Usuario>? = db.usuarioDao().all
-            if(lista != null) {
-                for (p in lista) {
-
-                    Log.i("Novousuario1: ", p.email+" "+p.senha+" "+p.matricula)
-                    if(p.email == u.email){
-                        temCadastrado = true
-                    }
-
-//                    db.usuarioDao().delete(u)
-                }
-            }
-
-            if(!temCadastrado) {
-                db.usuarioDao().insert(u)
-                Toast.makeText(this, "Conta criada com sucesso", Toast.LENGTH_LONG).show()
-                db.close()
-                startActivity(Intent(this@NovoUsuarioActivity, LoginActivity::class.java))
-                finish()
-            }else{
-                Toast.makeText(this, "Existe usuário cadastrado com esse e-mail", Toast.LENGTH_LONG).show()
-            }*/
-
-
-            //mOAuth?.createUserWithEmailAndPassword("","")?.addOnCompleteListener({})
-
             mAuth?.let { m ->
                 m.createUserWithEmailAndPassword(u.email,u.senha).addOnCompleteListener({ task ->
                     if(task.isSuccessful){
-                        Log.i("New", mAuth?.currentUser?.uid)
+                        Log.i("Novousuario", mAuth?.currentUser?.uid)
+                        Log.i("Novousuario", mAuth?.currentUser?.isEmailVerified.toString())
+
+                        if(mAuth?.currentUser != null && mAuth?.currentUser?.isEmailVerified == false){
+                            mAuth?.currentUser?.sendEmailVerification()
+                        }
+
                         startActivity(Intent(this@NovoUsuarioActivity, LoginActivity::class.java))
                         finish()
                     }else if(task.exception is FirebaseAuthUserCollisionException){
                         longToast("Email já cadastrado")
-                        Log.i("New", task.exception.toString())
+                        Log.i("Novousuario", task.exception.toString())
                     }
                 })
             }
-
         }
+
+
+        /*var db = Room.databaseBuilder(applicationContext,
+        AppDatabase::class.java, "exerciciofinal").allowMainThreadQueries().build()
+
+var temCadastrado = false
+val lista:List<Usuario>? = db.usuarioDao().all
+if(lista != null) {
+    for (p in lista) {
+
+        Log.i("Novousuario1: ", p.email+" "+p.senha+" "+p.matricula)
+        if(p.email == u.email){
+            temCadastrado = true
+        }
+
+//                    db.usuarioDao().delete(u)
+    }
+}
+
+if(!temCadastrado) {
+    db.usuarioDao().insert(u)
+    Toast.makeText(this, "Conta criada com sucesso", Toast.LENGTH_LONG).show()
+    db.close()
+    startActivity(Intent(this@NovoUsuarioActivity, LoginActivity::class.java))
+    finish()
+}else{
+    Toast.makeText(this, "Existe usuário cadastrado com esse e-mail", Toast.LENGTH_LONG).show()
+}*/
+
+
+        //mOAuth?.createUserWithEmailAndPassword("","")?.addOnCompleteListener({})
+
 
         tvLogin.setOnClickListener {
             startActivity(Intent(this@NovoUsuarioActivity, LoginActivity::class.java))

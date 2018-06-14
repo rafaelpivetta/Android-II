@@ -1,18 +1,26 @@
 package com.exercicioiesb.casa.exerciciofinal
 
 import android.arch.persistence.room.Room
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.exercicioiesb.casa.exerciciofinal.dao.AppDatabase
 import com.exercicioiesb.casa.exerciciofinal.entity.Usuario
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.android.synthetic.main.activity_redefinirsenha.*
+import org.jetbrains.anko.longToast
 
 class RedefinirSenhaActivity : AppCompatActivity(){
+
+    var mAuth: FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_redefinirsenha)
+
+        mAuth = FirebaseAuth.getInstance()
 
         btnRedefinir.setOnClickListener {
 
@@ -29,6 +37,17 @@ class RedefinirSenhaActivity : AppCompatActivity(){
             if(!util.emailValido(u.email)){
                 Log.i("Redefinirsenha:", "Email inválido")
                 return@setOnClickListener
+            }
+
+            mAuth?.let { m ->
+                m.sendPasswordResetEmail(u.email).addOnCompleteListener({
+                    if(it.isSuccessful){
+                        Log.i("Redefinirsenha", mAuth?.currentUser?.uid)
+                        Log.i("Redefinirsenha", mAuth?.currentUser?.isEmailVerified.toString())
+                    }else{
+                        Log.i("Redefinirsenha", it.exception.toString())
+                    }
+                })
             }
 
 //            var db = Room.databaseBuilder(applicationContext,

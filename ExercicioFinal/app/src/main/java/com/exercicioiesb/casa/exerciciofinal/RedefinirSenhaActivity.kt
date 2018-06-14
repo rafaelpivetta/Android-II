@@ -8,6 +8,7 @@ import android.util.Log
 import com.exercicioiesb.casa.exerciciofinal.dao.AppDatabase
 import com.exercicioiesb.casa.exerciciofinal.entity.Usuario
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.android.synthetic.main.activity_redefinirsenha.*
 import org.jetbrains.anko.longToast
@@ -40,12 +41,12 @@ class RedefinirSenhaActivity : AppCompatActivity(){
             }
 
             mAuth?.let { m ->
-                m.sendPasswordResetEmail(u.email).addOnCompleteListener({
-                    if(it.isSuccessful){
-                        Log.i("Redefinirsenha", mAuth?.currentUser?.uid)
-                        Log.i("Redefinirsenha", mAuth?.currentUser?.isEmailVerified.toString())
-                    }else{
-                        Log.i("Redefinirsenha", it.exception.toString())
+                m.sendPasswordResetEmail(u.email).addOnCompleteListener({ task ->
+                    if(task.isSuccessful){
+                        longToast("Para redefinir a senha verifique seu e-mail")
+                    }else if(task.exception is FirebaseAuthInvalidUserException){
+                        longToast("Não existe usuário cadastrado com esse e-mail")
+                        Log.i("Redefinirsenha", task.exception.toString())
                     }
                 })
             }

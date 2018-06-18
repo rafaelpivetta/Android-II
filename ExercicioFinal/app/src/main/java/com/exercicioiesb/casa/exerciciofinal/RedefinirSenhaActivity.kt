@@ -27,12 +27,12 @@ class RedefinirSenhaActivity : AppCompatActivity(){
 
             var u : Usuario = Usuario()
             u.email = edtEmail.text.toString()
-            u.senha = edtSenha.text.toString()
-
-            if(u.email.isEmpty() || u.senha.isEmpty() || edtConfirmarSenha.text.toString().isEmpty()){
-                Log.i("Redefinirsenha:", "Preencha todos os campos")
-                return@setOnClickListener
-            }
+//            u.senha = edtSenha.text.toString()
+//
+//            if(u.email.isEmpty() || u.senha.isEmpty() || edtConfirmarSenha.text.toString().isEmpty()){
+//                Log.i("Redefinirsenha:", "Preencha todos os campos")
+//                return@setOnClickListener
+//            }
 
             var util : Util = Util()
             if(!util.emailValido(u.email)){

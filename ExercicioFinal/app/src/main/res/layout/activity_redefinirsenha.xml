@@ -25,32 +25,6 @@
                 android:hint="Email" />
         </android.support.design.widget.TextInputLayout>
 
-        <!--  Senha usuário -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/edtSenha"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Senha"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <!--  Confirmar senha usuário -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/edtConfirmarSenha"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Confirmar Senha"/>
-        </android.support.design.widget.TextInputLayout>
-
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnRedefinir"
             android:layout_width="fill_parent"

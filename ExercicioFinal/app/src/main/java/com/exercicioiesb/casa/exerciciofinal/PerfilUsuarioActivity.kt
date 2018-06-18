@@ -51,22 +51,24 @@ class PerfilUsuarioActivity : AppCompatActivity(){
 
         mAuth = FirebaseAuth.getInstance()
 
-        val uid = mAuth!!.currentUser!!.uid
+//        val uid = mAuth!!.currentUser!!.uid
 
 
         val dbFire = FirebaseDatabase.getInstance()
 
-        val userRef = dbFire.getReference("/user/$uid")
-        userRef.child("nome").setValue("Nome Provisorio")
-        userRef.child("matricula").setValue("1731088025")
+//        val userRef = dbFire.getReference("/usuario/$uid")
+//        userRef.child("nome").setValue("Rafael")
+//        userRef.child("matricula").setValue("1731088025")
+//        userRef.child("telefone").setValue("61984870010")
 
 
-//        val aluno = Aluno()
-//        aluno.curso = "Pós Graduação"
-//        aluno.nome = "João da Silva"
-//        aluno.matricula = "0123"
 
-//        val alunoRef = dbFire.getReference("/user/${UUID.randomUUID()}")
+//        val aluno = Usuario()
+//        aluno.nome = "Rafael Pivetta Balbuena"
+//        aluno.matricula = "1731088025"
+//        aluno.email = "rafael.pivetta@gmail.com"
+//
+//        val alunoRef = dbFire.getReference("/usuario/${UUID.randomUUID()}")
 //        alunoRef.setValue(aluno)
 
         avatar.setOnClickListener {
@@ -89,28 +91,30 @@ class PerfilUsuarioActivity : AppCompatActivity(){
 
         var email = it.getStringExtra("email")
 
-        Log.i("Perfilusuario", "Email passado como parâmetro: "+email)
-        var usuario: Usuario = db.usuarioDao().findUserByEmail(email)
+//        Log.i("Perfilusuario", "Email passado como parâmetro: "+email)
+//        var usuario: Usuario = db.usuarioDao().findUserByEmail(email)
 
 
-        if(usuario != null) {
-
-            Log.i("Perfilusuario", "encontrado? "+usuario.email+" "+usuario.senha+" "+usuario.uid.toString())
-            if(!usuario.nome.isNullOrBlank())
-                edtNomeUsuario.text = Editable.Factory.getInstance().newEditable(usuario.nome)
-
-            if(!usuario.matricula.isNullOrBlank())
-                edtMatricula.text = Editable.Factory.getInstance().newEditable(usuario.matricula)
-
-            if(!usuario.telefone.isNullOrBlank())
-                edtTelefone.text = Editable.Factory.getInstance().newEditable(usuario.telefone)
-
-        }else{
-            Log.i("Perfilusuario", "não encontrado")
-        }
+//        if(usuario != null) {
+//
+//            Log.i("Perfilusuario", "encontrado? "+usuario.email+" "+usuario.senha+" "+usuario.uid.toString())
+//            if(!usuario.nome.isNullOrBlank())
+//                edtNomeUsuario.text = Editable.Factory.getInstance().newEditable(usuario.nome)
+//
+//            if(!usuario.matricula.isNullOrBlank())
+//                edtMatricula.text = Editable.Factory.getInstance().newEditable(usuario.matricula)
+//
+//            if(!usuario.telefone.isNullOrBlank())
+//                edtTelefone.text = Editable.Factory.getInstance().newEditable(usuario.telefone)
+//
+//        }else{
+//            Log.i("Perfilusuario", "não encontrado")
+//        }
         //Não faz sentido preencher os campos senha e confirma senha nesse momento.
 
         btnSalvar.setOnClickListener{
+
+            val aluno = Usuario()
 
             val util : Util = Util()
 
@@ -136,21 +140,29 @@ class PerfilUsuarioActivity : AppCompatActivity(){
                 return@setOnClickListener
             }
 
-            var u : Usuario = Usuario()
-            u.uid = usuario.uid
-            u.email = email
-            u.nome = edtNomeUsuario.text.toString()
-            u.matricula = edtMatricula.text.toString()
-            u.telefone = edtTelefone.text.toString()
-            u.senha = edtSenha.text.toString()
-            u.foto = imgPath
+//            var u : Usuario = Usuario()
+//            u.uid = usuario.uid
+//            u.email = email
+//            u.nome = edtNomeUsuario.text.toString()
+//            u.matricula = edtMatricula.text.toString()
+//            u.telefone = edtTelefone.text.toString()
+//            u.senha = edtSenha.text.toString()
+//            u.foto = imgPath
 
-            Log.i("Perfilusuario", "Campos: "+ u.nome+" "+u.email+" "+u.matricula+" "+ u.telefone+" "+u.senha+" "+u.uid)
+            aluno.nome = edtNomeUsuario.text.toString()
+            aluno.matricula = edtMatricula.text.toString()
+            aluno.telefone = edtTelefone.text.toString()
+            aluno.email = email
 
-            db.usuarioDao().update(u)
-            Toast.makeText(this, "Perfil atualizado", Toast.LENGTH_LONG).show()
-            db.close()
-            finish()
+            val alunoRef = dbFire.getReference("/usuario/${UUID.randomUUID()}")
+            alunoRef.setValue(aluno)
+
+//            Log.i("Perfilusuario", "Campos: "+ u.nome+" "+u.email+" "+u.matricula+" "+ u.telefone+" "+u.senha+" "+u.uid)
+
+//            db.usuarioDao().update(u)
+            Toast.makeText(this, "Perfil atualizado no firebase", Toast.LENGTH_LONG).show()
+//            db.close()
+//            finish()
         }
 
     }

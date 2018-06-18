@@ -81,24 +81,6 @@ class LoginActivity : AppCompatActivity() {
 
             }
 
-            /*var db = Room.databaseBuilder(applicationContext,
-                    AppDatabase::class.java, "exerciciofinal").allowMainThreadQueries().build()
-
-
-            var usuario: Usuario = db.usuarioDao().findUserByEmailAndPass(u.email, u.senha)
-            if(usuario != null) {//Rever, pois sempre retorna true?
-
-                Log.i("Loginusuario: sucesso->", usuario.matricula)
-                val it = Intent(this@LoginActivity, MainActivity::class.java)
-                it.putExtra("email", u.email)
-                it.putExtra("senha", u.senha)
-                db.close()
-                startActivity(it)
-                finish()
-            }else{
-                Toast.makeText(this, "Verifique o email ou a senha", Toast.LENGTH_LONG).show()
-                edtEmail.text = Editable.Factory.getInstance().newEditable("")
-            }*/
         }
     }
 }

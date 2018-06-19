@@ -12,6 +12,7 @@ import com.exercicioiesb.casa.exerciciofinal.entity.Usuario
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
@@ -65,12 +66,8 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(it)
                         finish()
                     }else if(task.exception is FirebaseAuthInvalidCredentialsException){
-                        Log.i("ERR", task.exception.toString()+" "+task.exception)
-                        longToast("A senha está inválida ou o usuário não possui uma senha")
-                        /*Toast.makeText(this, "Verifique o email ou a senha", Toast.LENGTH_LONG).show()
-                        edtEmail.text = Editable.Factory.getInstance().newEditable("")*/
+                        longToast("A senha está inválida ou não existe conta cadastrada para esse e-mail")
                     }else if(task.exception is FirebaseAuthInvalidUserException){
-                        Log.i("ERR", task.exception.toString()+" "+task.exception)
                         longToast("Não existe usuário cadastrado com o e-mail informado")
                     }else{
                         Log.i("ERR", task.exception.toString()+" "+task.exception)

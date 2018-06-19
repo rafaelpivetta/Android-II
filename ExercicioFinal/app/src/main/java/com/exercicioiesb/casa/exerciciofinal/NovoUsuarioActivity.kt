@@ -66,9 +66,10 @@ class NovoUsuarioActivity : AppCompatActivity(){
 
                         startActivity(Intent(this@NovoUsuarioActivity, LoginActivity::class.java))
                         finish()
+                    }else if(task.exception is FirebaseAuthInvalidCredentialsException){
+                        longToast("E-mail inválido, digite um novo email")
                     }else if(task.exception is FirebaseAuthUserCollisionException){
-                        longToast("Email já cadastrado")
-                        Log.i("Novousuario", task.exception.toString())
+                        longToast("E-mail já cadastrado")
                     }
                 })
             }

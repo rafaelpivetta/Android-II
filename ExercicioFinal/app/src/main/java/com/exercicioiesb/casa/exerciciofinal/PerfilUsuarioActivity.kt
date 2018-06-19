@@ -24,7 +24,10 @@ import android.text.Editable
 import android.util.Base64
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -44,56 +47,42 @@ class PerfilUsuarioActivity : AppCompatActivity(){
     }
 
     var mAuth : FirebaseAuth? = null
+    var key : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_perfilusuario)
 
         mAuth = FirebaseAuth.getInstance()
+        val dbFire = FirebaseDatabase.getInstance()
+        val usuarioRef = dbFire.getReference()
 
 //        val uid = mAuth!!.currentUser!!.uid
 
+        usuarioRef.child("usuarios").orderByChild("email").equalTo(mAuth!!.currentUser!!.email).addValueEventListener(object: ValueEventListener {
 
-        val dbFire = FirebaseDatabase.getInstance()
+            override fun onDataChange(dataSnapshot: DataSnapshot){
 
-//        val userRef = dbFire.getReference("/usuario/$uid")
-//        userRef.child("nome").setValue("Rafael")
-//        userRef.child("matricula").setValue("1731088025")
-//        userRef.child("telefone").setValue("61984870010")
+                for(usuarioSnapshot:DataSnapshot in dataSnapshot.children) {
+                    edtNomeUsuario.text = Editable.Factory.getInstance().newEditable(usuarioSnapshot.child("nome").value.toString())
+                    edtMatricula.text = Editable.Factory.getInstance().newEditable(usuarioSnapshot.child("matricula").value.toString())
+                    edtTelefone.text = Editable.Factory.getInstance().newEditable(usuarioSnapshot.child("telefone").value.toString())
+                    key = usuarioSnapshot.key
+                    Log.i("Perfilusuario", key)
+                }
 
+            }
 
-
-//        val aluno = Usuario()
-//        aluno.nome = "Rafael Pivetta Balbuena"
-//        aluno.matricula = "1731088025"
-//        aluno.email = "rafael.pivetta@gmail.com"
-//
-//        val alunoRef = dbFire.getReference("/usuario/${UUID.randomUUID()}")
-//        alunoRef.setValue(aluno)
+            override fun onCancelled(error: DatabaseError) {}
+        })
 
         avatar.setOnClickListener {
             exibirEscolhaOrigem()
-//            if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
-//                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), REQUEST_PERMISSION)
-//            }else {
-//                takePhotoFromCamera()
-//            }
         }
-
-
-
-
-        var db = Room.databaseBuilder(applicationContext,
-                AppDatabase::class.java, "exerciciofinal").allowMainThreadQueries().build()
-
 
         val it = intent
 
         var email = it.getStringExtra("email")
-
-//        Log.i("Perfilusuario", "Email passado como parâmetro: "+email)
-//        var usuario: Usuario = db.usuarioDao().findUserByEmail(email)
-
 
 //        if(usuario != null) {
 //
@@ -114,7 +103,7 @@ class PerfilUsuarioActivity : AppCompatActivity(){
 
         btnSalvar.setOnClickListener{
 
-            val aluno = Usuario()
+            val usuario = Usuario()
 
             val util : Util = Util()
 
@@ -149,20 +138,20 @@ class PerfilUsuarioActivity : AppCompatActivity(){
 //            u.senha = edtSenha.text.toString()
 //            u.foto = imgPath
 
-            aluno.nome = edtNomeUsuario.text.toString()
-            aluno.matricula = edtMatricula.text.toString()
-            aluno.telefone = edtTelefone.text.toString()
-            aluno.email = email
+            usuario.nome = edtNomeUsuario.text.toString()
+            usuario.matricula = edtMatricula.text.toString()
+            usuario.telefone = edtTelefone.text.toString()
+            usuario.email = email
 
-            val alunoRef = dbFire.getReference("/usuario/${UUID.randomUUID()}")
-            alunoRef.setValue(aluno)
+//            val usuarioRef = dbFire.getReference("/usuarios/${UUID.randomUUID()}")
+            if(key.equals("")){
+                key = UUID.randomUUID().toString()
+            }
+            val usuarioRef = dbFire.getReference("/usuarios/${key}")
+            usuarioRef.setValue(usuario)
 
-//            Log.i("Perfilusuario", "Campos: "+ u.nome+" "+u.email+" "+u.matricula+" "+ u.telefone+" "+u.senha+" "+u.uid)
-
-//            db.usuarioDao().update(u)
             Toast.makeText(this, "Perfil atualizado no firebase", Toast.LENGTH_LONG).show()
-//            db.close()
-//            finish()
+
         }
 
     }

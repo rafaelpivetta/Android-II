@@ -282,4 +282,14 @@ class PerfilUsuarioActivity : AppCompatActivity(){
         return Bitmap.createScaledBitmap(bm, outWidth, outHeight, false)
     }
 
+    private fun deslogar() {
+
+        mAuth?.signOut()
+
+        val intent = Intent(this@PerfilUsuarioActivity, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
+
+    }
+
 }

@@ -4,26 +4,37 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.RecyclerView
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.TextView
-import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
 
 class MainActivity : AppCompatActivity() {
 
+    var mAuth: FirebaseAuth? = null
+
     private var noticiasList = ArrayList<Noticia>()
+
+    //Recycler
+    lateinit var lista: RecyclerView
+
+    var email: String = String()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        mAuth = FirebaseAuth.getInstance()
+
         val it = intent
 
-        var email = it.getStringExtra("email")
+        email = it.getStringExtra("email")
 
         noticiasList.add(Noticia(1, "Notícia1", "Notícia1 Notícia1 Notícia1 Notícia1 Notícia1 Notícia1 Notícia1 Notícia1 Notícia1 Notícia1 Notícia1 Notícia1 Notícia1 Notícia1.", "14/05/2018"))
         noticiasList.add(Noticia(2, "Notícia2", "Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2 Notícia2.", "14/05/2018"))
@@ -39,14 +50,6 @@ class MainActivity : AppCompatActivity() {
         lsvNotes.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
 
             startActivity(Intent(this@MainActivity, DetalheNoticiaActivity::class.java))
-
-        }
-
-        tvPerfil.setOnClickListener {
-            val it = Intent(this@MainActivity, PerfilUsuarioActivity::class.java)
-            it.putExtra("email", email)
-
-            startActivity(it)
 
         }
 
@@ -106,6 +109,41 @@ class MainActivity : AppCompatActivity() {
             this.tvConteudo = view?.findViewById(R.id.txvConteudo) as TextView
             this.tvData = view?.findViewById(R.id.txvData) as TextView
         }
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        val id = item.itemId
+
+        if (id == R.id.action_add_usuario) {
+            abrirTelaPerfil()
+        } else if (id == R.id.action_sair_admin) {
+            deslogar()
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun abrirTelaPerfil() {
+        val intent = Intent(this@MainActivity, PerfilUsuarioActivity::class.java)
+        intent.putExtra("email", email)
+        startActivity(intent)
+    }
+
+    private fun deslogar() {
+
+        mAuth?.signOut()
+
+        val intent = Intent(this@MainActivity, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
+
     }
 
 }

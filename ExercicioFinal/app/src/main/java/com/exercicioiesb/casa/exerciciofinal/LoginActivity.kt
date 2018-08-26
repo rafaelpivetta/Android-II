@@ -35,49 +35,55 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this@LoginActivity, RedefinirSenhaActivity::class.java))
         }
 
-        btnLogin.setOnClickListener {
+        if(mAuth?.currentUser != null) {
+            val it = Intent(this@LoginActivity, MainActivity::class.java)
+            it.putExtra("email", mAuth?.currentUser?.email)
+            startActivity(it)
+            finish()
+        }else{
+            btnLogin.setOnClickListener {
 
-            var u : Usuario = Usuario()
-            u.email = edtEmail.text.toString()
-            u.senha = edtSenha.text.toString()
+                var u: Usuario = Usuario()
+                u.email = edtEmail.text.toString()
+                u.senha = edtSenha.text.toString()
 
-            if(u.email.isEmpty() || u.senha.isEmpty()){
-                Toast.makeText(this, "Preencha o campo Email e/ou Senha", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
+                if (u.email.isEmpty() || u.senha.isEmpty()) {
+                    Toast.makeText(this, "Preencha o campo Email e/ou Senha", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+
+                var util: Util = Util()
+                if (!util.emailValido(u.email)) {
+                    Toast.makeText(this, "Email inválido", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+
+                mAuth?.let { m ->
+
+                    m.signInWithEmailAndPassword(u.email, u.senha).addOnCompleteListener({ task ->
+
+                        if (task.isSuccessful) {
+
+                            Log.i("New", mAuth?.currentUser?.uid)
+
+                            val it = Intent(this@LoginActivity, MainActivity::class.java)
+                            it.putExtra("email", u.email)
+                            it.putExtra("senha", u.senha)
+                            startActivity(it)
+                            finish()
+                        } else if (task.exception is FirebaseAuthInvalidCredentialsException) {
+                            longToast("A senha está inválida ou não existe conta cadastrada para esse e-mail")
+                        } else if (task.exception is FirebaseAuthInvalidUserException) {
+                            longToast("Não existe usuário cadastrado com o e-mail informado")
+                        } else {
+                            Log.i("ERR", task.exception.toString() + " " + task.exception)
+                            longToast("Verifique o e-mail e a senha")
+                        }
+
+                    })
+
+                }
             }
-
-            var util : Util = Util()
-            if(!util.emailValido(u.email)){
-                Toast.makeText(this, "Email inválido", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-
-            mAuth?.let { m ->
-
-                m.signInWithEmailAndPassword(u.email, u.senha).addOnCompleteListener({ task ->
-
-                    if(task.isSuccessful){
-
-                        Log.i("New", mAuth?.currentUser?.uid)
-
-                        val it = Intent(this@LoginActivity, MainActivity::class.java)
-                        it.putExtra("email", u.email)
-                        it.putExtra("senha", u.senha)
-                        startActivity(it)
-                        finish()
-                    }else if(task.exception is FirebaseAuthInvalidCredentialsException){
-                        longToast("A senha está inválida ou não existe conta cadastrada para esse e-mail")
-                    }else if(task.exception is FirebaseAuthInvalidUserException){
-                        longToast("Não existe usuário cadastrado com o e-mail informado")
-                    }else{
-                        Log.i("ERR", task.exception.toString()+" "+task.exception)
-                        longToast("Verifique o e-mail e a senha")
-                    }
-
-                })
-
-            }
-
         }
     }
 }

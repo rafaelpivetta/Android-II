@@ -63,6 +63,9 @@ class MainActivity : AppCompatActivity() {
         var txtMatriculaAluno: TextView
 
         init{
+            itemView.setOnClickListener {
+                println("TEST")
+            }
             txtNomeAluno = itemView.findViewById(R.id.txtNome)
             txtMatriculaAluno = itemView.findViewById(R.id.txtMatricula)
         }

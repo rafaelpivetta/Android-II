@@ -7,7 +7,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label=""
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Dark">
@@ -17,7 +17,8 @@
         <activity
             android:name="com.exercicioiesb.casa.exerciciofinal.SplashScreenActivity"
             android:label="@string/app_name"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:theme="@style/AppTheme.DarkNoAction">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -38,10 +39,10 @@
 
 
         <activity android:name=".MainActivity" android:theme="@style/AppTheme.Dark"/>
-        <activity android:name=".LoginActivity" android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".LoginActivity" android:theme="@style/AppTheme.DarkNoAction"/>
         <activity android:name=".DetalheNoticiaActivity" android:theme="@style/AppTheme.Dark"/>
         <activity android:name=".NovoUsuarioActivity" android:theme="@style/AppTheme.Dark"/>
-        <activity android:name=".RedefinirSenhaActivity" android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".RedefinirSenhaActivity" android:theme="@style/AppTheme.DarkNoAction"/>
         <activity android:name=".PerfilUsuarioActivity" android:theme="@style/AppTheme.Dark"/>
 
 

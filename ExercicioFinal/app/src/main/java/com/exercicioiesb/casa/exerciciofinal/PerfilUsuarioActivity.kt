@@ -24,10 +24,10 @@ import android.text.Editable
 import android.util.Base64
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.squareup.picasso.Picasso
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -36,7 +36,7 @@ import java.util.*
 
 class PerfilUsuarioActivity : AppCompatActivity(){
 
-    private var imgPath: String = ""
+    private var imgUri: Uri? = null
 
     private var CAMERA = 0
     private var GALLERY = 1
@@ -47,6 +47,7 @@ class PerfilUsuarioActivity : AppCompatActivity(){
     }
 
     var mAuth : FirebaseAuth? = null
+    var storageReference: StorageReference? = null
     var key : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,10 +55,11 @@ class PerfilUsuarioActivity : AppCompatActivity(){
         setContentView(R.layout.activity_perfilusuario)
 
         mAuth = FirebaseAuth.getInstance()
+        storageReference = FirebaseStorage.getInstance().reference
         val dbFire = FirebaseDatabase.getInstance()
         val usuarioRef = dbFire.getReference()
 
-//        val uid = mAuth!!.currentUser!!.uid
+        val uid = mAuth!!.currentUser!!.uid
 
         usuarioRef.child("usuarios").orderByChild("email").equalTo(mAuth!!.currentUser!!.email).addValueEventListener(object: ValueEventListener {
 
@@ -107,7 +109,7 @@ class PerfilUsuarioActivity : AppCompatActivity(){
 
             val util : Util = Util()
 
-            if(imgPath==""){
+            if(imgUri==null){
                 Toast.makeText(this, "Selecione uma imagem", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
@@ -200,12 +202,13 @@ class PerfilUsuarioActivity : AppCompatActivity(){
 
         if(intent.resolveActivity(packageManager) != null){
             var img: File? = null
+            imgUri = null
             try{
                 img = createImageFile()
             }catch(e: IOException){}
 
             if(img != null){
-                val imgUri = FileProvider.getUriForFile(
+                imgUri = FileProvider.getUriForFile(
                         this,
                         "com.example.android.fileprovider",
                         img
@@ -225,7 +228,7 @@ class PerfilUsuarioActivity : AppCompatActivity(){
                 ".png",
                 storageDir
         )
-        imgPath = image.absolutePath
+//        imgPath = image.absolutePath
 
         return image
     }
@@ -244,42 +247,12 @@ class PerfilUsuarioActivity : AppCompatActivity(){
         var thumbnail: Bitmap
         if(requestCode == CAMERA && resultCode == Activity.RESULT_OK) {
 
-            avatar.rotation = 90f
-            avatar.setImageURI(Uri.parse(imgPath))
-            Log.i("Caminho", imgPath)
+            Picasso.get().load(imgUri).resize(300, 300).centerCrop().into(avatar)
 
-//            thumbnail = data!!.extras!!.get("data") as Bitmap
-//            avatar.setImageBitmap(thumbnail)
-//
-//            val outByte = ByteArrayOutputStream()
-//
-//            thumbnail.compress(Bitmap.CompressFormat.PNG, 100, outByte)
-//
-//            imagemTexto = Base64.encodeToString(outByte.toByteArray(), Base64.DEFAULT)
-
-            //  Toast.makeText(this@MainActivity, "Foto capturada!", Toast.LENGTH_SHORT).show()
-
-            //Toast.makeText(this@MainActivity, "Base64: " + base64, Toast.LENGTH_SHORT).show()
         }else if(requestCode == GALLERY){
-            thumbnail = MediaStore.Images.Media.getBitmap(applicationContext.contentResolver, data?.getData())
-            var scaledBm = scaleBitmapToMaxSize(600, thumbnail)
-            avatar.setImageBitmap(scaledBm)
+            val imagemSelecionada = data?.getData()
+            Picasso.get().load(imagemSelecionada).resize(300, 300).centerCrop().into(avatar)
         }
-    }
-
-    fun scaleBitmapToMaxSize(maxSize: Int, bm: Bitmap): Bitmap {
-        val outWidth: Int
-        val outHeight: Int
-        val inWidth = bm.width
-        val inHeight = bm.height
-        if (inWidth > inHeight) {
-            outWidth = maxSize
-            outHeight = inHeight * maxSize / inWidth
-        } else {
-            outHeight = maxSize
-            outWidth = inWidth * maxSize / inHeight
-        }
-        return Bitmap.createScaledBitmap(bm, outWidth, outHeight, false)
     }
 
     private fun deslogar() {

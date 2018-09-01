@@ -89,23 +89,6 @@ class PerfilUsuarioActivity : AppCompatActivity(){
 
         var email = it.getStringExtra("email")
 
-//        if(usuario != null) {
-//
-//            Log.i("Perfilusuario", "encontrado? "+usuario.email+" "+usuario.senha+" "+usuario.uid.toString())
-//            if(!usuario.nome.isNullOrBlank())
-//                edtNomeUsuario.text = Editable.Factory.getInstance().newEditable(usuario.nome)
-//
-//            if(!usuario.matricula.isNullOrBlank())
-//                edtMatricula.text = Editable.Factory.getInstance().newEditable(usuario.matricula)
-//
-//            if(!usuario.telefone.isNullOrBlank())
-//                edtTelefone.text = Editable.Factory.getInstance().newEditable(usuario.telefone)
-//
-//        }else{
-//            Log.i("Perfilusuario", "não encontrado")
-//        }
-        //Não faz sentido preencher os campos senha e confirma senha nesse momento.
-
         btnSalvar.setOnClickListener{
 
             val usuario = Usuario()
@@ -117,20 +100,8 @@ class PerfilUsuarioActivity : AppCompatActivity(){
                 return@setOnClickListener
             }
 
-            if(edtNomeUsuario.text.isEmpty() || edtMatricula.text.isEmpty() || edtTelefone.text.isEmpty() || edtSenha.text.isEmpty() || edtConfirmarSenha.text.isEmpty()){
+            if(edtNomeUsuario.text.isEmpty() || edtMatricula.text.isEmpty() || edtTelefone.text.isEmpty()){
                 Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-
-            if(!util.comparaSenhas(edtSenha.text.toString(), edtConfirmarSenha.text.toString())){
-                Toast.makeText(this, "Senhas são diferentes", Toast.LENGTH_LONG).show()
-                edtSenha.setText("")
-                edtConfirmarSenha.setText("")
-                return@setOnClickListener
-            }
-
-            if(!util.senhaValida(edtSenha.text.toString())){
-                Toast.makeText(this, "A senha deve conter 6 dígitos, sendo pelo menos um caractere maiúsculo, um caractere especial e um número", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
